@@ -79,7 +79,11 @@ class Attendance_table(customtkinter.CTkFrame):
 
         attendance_Tree.grid(row=0, column=0)
 
+<<<<<<< HEAD
         with open(r"E:\facerecognition\Attendance.csv", "r+", newline="\n") as file:
+=======
+        with open("Attendance.csv", "r+", newline="\n") as file:
+>>>>>>> af59ce0bb9c532d6a3e2abe5ce1cb6cf49377052
             dataList = file.readlines()
             data = []
             for line in dataList:

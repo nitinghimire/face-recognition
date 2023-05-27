@@ -500,7 +500,11 @@ class Student(customtkinter.CTkToplevel):
 
                 def face_cropped(img):
                     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+<<<<<<< HEAD
                     face = face_classifier.detectMultiScale(gray, 1.3, 6)
+=======
+                    face = face_classifier.detectMultiScale(gray, 1.3, 5)
+>>>>>>> af59ce0bb9c532d6a3e2abe5ce1cb6cf49377052
                     # scaling factor = 1.3
                     # minimum neighbour = 5
 
@@ -508,11 +512,15 @@ class Student(customtkinter.CTkToplevel):
                         face_cropped = img[y:y+h, x:x+w]
                         return face_cropped
 
+<<<<<<< HEAD
                 camera_url = "http://nitin:nitinkopassword@[192.168.13.121]:8080:PORT/video"
                 cap = cv2.VideoCapture(camera_url)
                 if not cap.isOpened():
                     cap = cv2.VideoCapture(1)
                 # cap = cv2.VideoCapture(1)
+=======
+                cap = cv2.VideoCapture(1)
+>>>>>>> af59ce0bb9c532d6a3e2abe5ce1cb6cf49377052
                 img_id = 0
                 while True:
                     ret, my_frame = cap.read()
@@ -522,12 +530,20 @@ class Student(customtkinter.CTkToplevel):
                         face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
                         file_name_path = r"E:\facerecognition\bettter ui\data"+"/user" + \
                             "."+str(id)+"."+str(img_id)+".jpg"
+<<<<<<< HEAD
                         face_img = self.gammaCorrection(face, 2.5)
+=======
+                        # face = self.gammaCorrection(face, 2.5)
+>>>>>>> af59ce0bb9c532d6a3e2abe5ce1cb6cf49377052
                         cv2.imwrite(file_name_path, face)
                         cv2.putText(face, str(img_id), (50, 50),
                                     cv2.FONT_HERSHEY_COMPLEX, 2, (0, 255, 0), 2)
                         cv2.imshow("Cropped face", face)
+<<<<<<< HEAD
                         cv2.imshow("Gamma corrected image", face_img)
+=======
+                        cv2.imshow("Gamma corrected image", face)
+>>>>>>> af59ce0bb9c532d6a3e2abe5ce1cb6cf49377052
 
                     if cv2.waitKey(1) == 13 or int(img_id) == 100:
                         break
