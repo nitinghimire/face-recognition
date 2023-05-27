@@ -500,7 +500,7 @@ class Student(customtkinter.CTkToplevel):
 
                 def face_cropped(img):
                     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-                    face = face_classifier.detectMultiScale(gray, 1.3, 5)
+                    face = face_classifier.detectMultiScale(gray, 1.3, 6)
                     # scaling factor = 1.3
                     # minimum neighbour = 5
 
@@ -508,7 +508,11 @@ class Student(customtkinter.CTkToplevel):
                         face_cropped = img[y:y+h, x:x+w]
                         return face_cropped
 
-                cap = cv2.VideoCapture(1)
+                camera_url = "http://nitin:nitinkopassword@[192.168.13.121]:8080:PORT/video"
+                cap = cv2.VideoCapture(camera_url)
+                if not cap.isOpened():
+                    cap = cv2.VideoCapture(1)
+                # cap = cv2.VideoCapture(1)
                 img_id = 0
                 while True:
                     ret, my_frame = cap.read()
@@ -518,12 +522,12 @@ class Student(customtkinter.CTkToplevel):
                         face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
                         file_name_path = r"E:\facerecognition\bettter ui\data"+"/user" + \
                             "."+str(id)+"."+str(img_id)+".jpg"
-                        # face = self.gammaCorrection(face, 2.5)
+                        face_img = self.gammaCorrection(face, 2.5)
                         cv2.imwrite(file_name_path, face)
                         cv2.putText(face, str(img_id), (50, 50),
                                     cv2.FONT_HERSHEY_COMPLEX, 2, (0, 255, 0), 2)
                         cv2.imshow("Cropped face", face)
-                        cv2.imshow("Gamma corrected image", face)
+                        cv2.imshow("Gamma corrected image", face_img)
 
                     if cv2.waitKey(1) == 13 or int(img_id) == 100:
                         break

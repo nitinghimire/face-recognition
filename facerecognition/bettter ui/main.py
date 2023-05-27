@@ -1,3 +1,4 @@
+import threading
 import customtkinter
 import os
 from PIL import Image, ImageTk
@@ -14,8 +15,59 @@ from loginpage import Login
 from initial_screen import Loading_Screen
 from attendance_table import Attendance_table
 from graph import graph
+
+# from dns import resolver
+# import socket
+# import struct
+# import time
+# from zeroconf import ServiceBrowser, Zeroconf
+
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("green")
+
+
+# class CameraServiceListener:
+#     def __init__(self):
+#         self.camera_url = None
+#         self.discovery_completed = threading.Event()
+
+#     def remove_service(self, zeroconf, type, name):
+#         pass
+
+#     def update_service(self, zeroconf, type, name):
+#         pass
+
+#     def add_service(self, zeroconf, type, name):
+#         info = zeroconf.get_service_info(type, name)
+#         if info:
+#             self.camera_url = self.construct_camera_url(info)
+#             self.discovery_completed.set()
+
+#     def construct_camera_url(self, info):
+#         ip_address = info.parsed_addresses()[0]
+#         port = info.port
+#         username = "nitin"  # Replace with your username
+#         password = "nitinkopassword"  # Replace with your password
+
+#         # Construct the camera URL with the IP address, port, username, and password
+#         camera_url = f"http://{username}:{password}@{ip_address}:{port}/video"
+
+#         return camera_url
+
+# # Function to discover IP Webcam services and retrieve camera URL
+
+
+# def discover_camera_service():
+#     zeroconf = Zeroconf()
+#     listener = CameraServiceListener()
+#     browser = ServiceBrowser(zeroconf, "_http._tcp.local.", listener)
+
+#     listener.discovery_completed.wait(
+#         timeout=10)  # Adjust the timeout as needed
+
+#     zeroconf.close()
+
+#     return listener.camera_url
 
 
 class App(customtkinter.CTk):
@@ -28,7 +80,7 @@ class App(customtkinter.CTk):
         self.geometry("%dx%d" % (width, height))
 
         self.title("Facial Recognition")
-
+        self.mode_flag = False
         # set grid layout 1x2
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
@@ -50,10 +102,10 @@ class App(customtkinter.CTk):
         self.switch = customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "switch2.png")),
                                              dark_image=Image.open(os.path.join(image_path, "switch1.png")), size=(50, 50))
 
-        self.welcomeimage = customtkinter.CTkImage(
-            light_image=Image.open(
-                r"bettter ui\test_images\blackwelcome.png"),
-            dark_image=Image.open(r"E:\facerecognition\bettter ui\test_images\Welcome-White-Text-Transparent-PNG.png"), size=(480, 150))
+        # self.welcomeimage = customtkinter.CTkImage(
+        #     light_image=Image.open(
+        #         r"bettter ui\test_images\blackwelcome.png"),
+        #     dark_image=Image.open(r"E:\facerecognition\bettter ui\test_images\Welcome-White-Text-Transparent-PNG.png"), size=(480, 150))
 
         # create navigation frame
         self.navigation_frame = customtkinter.CTkFrame(self, corner_radius=0)
@@ -95,47 +147,66 @@ class App(customtkinter.CTk):
             self.home_frame, bg_color="transparent", text_color="gray60", font=("lucida bright", 100), text="Face Recognition")
         self.home_frame_large_image_label.grid(
             row=0, column=0, padx=20, pady=10, sticky="ew")
-        # self.welcome = customtkinter.CTkLabel(
-        #     self.home_frame, text="", image=self.welcomeimage)
-        # self.welcome.grid(
-        #     row=0, column=0, padx=20, pady=10, sticky="ew")
-
         self.home_frame_button_1 = customtkinter.CTkButton(
-            self.home_frame, text_color=("gray10", "gray90"), text="Student Information", image=customtkinter.CTkImage(Image.open(os.path.join(image_path, "student_details.png")), size=(100, 100)),  command=self.student_details, compound="top")
+            self.home_frame, text_color=("gray10", "gray90"), text="Student Information", image=customtkinter.CTkImage(Image.open(os.path.join(image_path, "student_details.png")), size=(70, 70)),  command=self.student_details, compound="top")
 
         self.home_frame_button_2 = customtkinter.CTkButton(
-            self.home_frame, text_color=("gray10", "gray90"), text="Attendance", image=customtkinter.CTkImage(Image.open(os.path.join(image_path, "attendance.png")), size=(100, 100)),  command=self.face_detect, compound="top")
+            self.home_frame, text_color=("gray10", "gray90"), text="Attendance", image=customtkinter.CTkImage(Image.open(os.path.join(image_path, "attendance.png")), size=(70, 70)),  command=self.face_detect, compound="top")
         self.home_frame_button_2.grid(row=2, column=0, padx=20, pady=10)
         self.home_frame_button_3 = customtkinter.CTkButton(
-            self.home_frame, text_color=("gray10", "gray90"), text="Train", image=customtkinter.CTkImage(Image.open(os.path.join(image_path, "faceid.png")), size=(100, 100)),  command=self.train_classifier, compound="top")
+            self.home_frame, text_color=("gray10", "gray90"), text="Train", image=customtkinter.CTkImage(Image.open(os.path.join(image_path, "faceid.png")), size=(70, 70)),  command=self.train_classifier, compound="top")
 
         self.home_frame_button_4 = customtkinter.CTkButton(
-            self.home_frame, text_color=("gray10", "gray90"), text="Exit", image=customtkinter.CTkImage(Image.open(os.path.join(image_path, "exit.png")), size=(100, 100)), command=self.destroy, compound="top")
+            self.home_frame, text_color=("gray10", "gray90"), text="Logout", image=customtkinter.CTkImage(Image.open(os.path.join(image_path, "logout.png")), size=(70, 70)), command=lambda: self.select_frame_by_name("loading"), compound="top")
         self.home_frame_button_4.grid(row=4, column=0, padx=20, pady=10)
+
+        self.home_frame_button_5 = customtkinter.CTkButton(
+            self.home_frame, text_color=("gray10", "gray90"), text="Exit", image=customtkinter.CTkImage(Image.open(os.path.join(image_path, "exit.png")), size=(70, 70)), command=self.destroy, compound="top")
+        self.home_frame_button_5.grid(row=5, column=0, padx=20, pady=10)
 
         # create loading screen
         self.loading_screen = Loading_Screen(self)
         self.loading_screen.admin_button.configure(
             command=lambda: self.select_frame_by_name("login"))
         self.loading_screen.student_button.configure(
-            command=lambda: self.select_frame_by_name("home"))
+            command=self.student_option)
 
         # # create login frame
         self.login = Login(self)
         self.login.login_button.bind("<ButtonRelease>", self.login_event)
-        self.login.main_frame.bind("<Return>", self.register_event)
+        self.login.main_frame.bind(
+            "<Return>", self.login.register_button_event)
 
         # create second frame
         self.second_frame = customtkinter.CTkFrame(
             self, corner_radius=0, fg_color="transparent")
         self.studentgraph = customtkinter.CTkLabel(
             self.second_frame, text="Attendance Trend Of Students", font=customtkinter.CTkFont(size=30, weight="bold"))
-        self.studentgraph.grid(row=0, column=0, padx=20, pady=20, sticky="new")
-        self.second_frame.grid_rowconfigure(1, weight=1)
-        self.second_frame.grid_columnconfigure(0, weight=1)
+
+        self.student_entry = customtkinter.CTkEntry(
+            self.second_frame, corner_radius=0, width=250, placeholder_text="Please Enter Student to be Searched", bg_color="transparent", fg_color="transparent")
+        self.student_entry.grid(row=1, column=0, padx=(200, 20),
+                                pady=20, sticky="w")
+        self.student_entry.bind(
+            "<Return>", self.student_table_manage)
+
+        self.search_label = customtkinter.CTkLabel(
+            self.second_frame, text="Search By ID : ")
+        self.search_label.grid(row=1, column=0, padx=20, pady=20, sticky="w")
+
+        self.search_label.grid_rowconfigure(0, weight=0)
+        self.student_entry.grid_rowconfigure(0, weight=0)
+        self.student_entry.grid_columnconfigure(1, weight=0)
+        self.search_label.grid_columnconfigure(0, weight=0)
+
+        self.studentgraph.grid(row=0, column=0, padx=20,
+                               pady=20, sticky="new", columnspan=2)
+        self.second_frame.grid_rowconfigure(2, weight=1)
+        self.second_frame.grid_columnconfigure((0, 1), weight=1)
 
         self.graph = graph(self.second_frame)
-        self.graph.grid(row=1, column=0, padx=20, pady=20, sticky="new")
+        self.graph.grid(row=2, column=0, padx=20, pady=20,
+                        sticky="new", columnspan=2)
 
         # create third frame
         self.third_frame = customtkinter.CTkFrame(
@@ -155,14 +226,20 @@ class App(customtkinter.CTk):
         self.select_frame_by_name("loading")
         self.toplevel_window = None
 
+    def student_table_manage(self, event):
+        self.graph.student_search(self.student_entry.get())
+
     def login_event(self, event):
         if self.login.loginflag == True:
             self.select_frame_by_name("home")
             self.home_frame_button_1.grid(row=1, column=0, padx=20, pady=10)
             self.home_frame_button_3.grid(row=3, column=0, padx=20, pady=10)
 
-    def register_event(self, event):
-        self.login.register_button_event(self)
+    def student_option(self):
+        self.select_frame_by_name("home")
+        self.home_frame_button_1.grid_forget()
+        self.home_frame_button_3.grid_forget()
+        self.frame_3_button.grid_forget()
 
     def select_frame_by_name(self, name):
         # set button color for selected button
@@ -188,6 +265,7 @@ class App(customtkinter.CTk):
             self.third_frame.grid_forget()
         if name == "login":
             self.login.grid(row=0, column=0, sticky="nsew")
+            self.frame_3_button.grid(row=3, column=0, sticky="ew")
         else:
             self.login.grid_forget()
         if name == "loading":
@@ -300,7 +378,7 @@ class App(customtkinter.CTk):
             coord = []
             for (x, y, w, h) in features:
                 cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 3)
-                id, predict = clf.predict(gray_image[y:y+h, x:x+h])
+                id, predict = clf.predict(gray_image[y:y+h, x:x+w])
                 confidence = int((100*(1-predict/300)))
 
                 conn = mysql.connector.connect(
@@ -310,21 +388,25 @@ class App(customtkinter.CTk):
                 my_cursor.execute(
                     "Select Name from student where Student_ID = " + str(id))
                 fd = my_cursor.fetchone()
+                fd = list(fd)
                 fd = "+".join(fd)
 
                 my_cursor.execute(
                     "Select Department from student where Student_ID =" + str(id))
                 fd1 = my_cursor.fetchone()
+                fd1 = list(fd1)
                 fd1 = "+".join(fd1)
 
                 my_cursor.execute(
                     "Select Semester from student where Student_ID ="+str(id))
                 fd2 = my_cursor.fetchone()
+                fd2 = list(fd2)
                 fd2 = "+".join(fd2)
 
                 my_cursor.execute(
                     "Select Student_ID from student where Student_ID ="+str(id))
                 fd3 = my_cursor.fetchone()
+                fd3 = list(fd3)
                 fd3 = "+".join(fd3)
 
                 if confidence > 85:
@@ -358,7 +440,14 @@ class App(customtkinter.CTk):
         clf = cv2.face.LBPHFaceRecognizer_create()
         clf.read("classifier.xml")
 
-        video_cap = cv2.VideoCapture(1)
+        # camera_url = f"http://nitin:nitinkopassword@[2400:1a00:b030:ae18:dccb:76ff:fe10:c56d]:8080:PORT/video"
+        # camera_url = "http://nitin:nitinkopassword@[192.168.1.69]:8080:PORT/video"
+        camera_url = "http://nitin:nitinkopassword@[192.168.13.121]:8080:PORT/video"
+
+        # camera_url = discover_camera_service()
+        video_cap = cv2.VideoCapture(camera_url)
+        if not video_cap.isOpened():
+            video_cap = cv2.VideoCapture(1)
 
         while True:
             ret, img = video_cap.read()
