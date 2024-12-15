@@ -62,47 +62,36 @@ The **Face Recognition Attendance System** is a desktop application designed to 
   ```bash
   pip install opencv-python mysql-connector-python customtkinter
 
-Steps
-Clone the repository:
+## Steps
 
-bash
-```
+### Clone the Repository:
+```bash
 git clone https://github.com/yourusername/face-recognition-attendance.git
 cd face-recognition-attendance
-Configure the MySQL database:
 
+
+Configure the MySQL Database:
 Create a database named attendance_system.
 Import the provided schema.sql file to set up the tables.
-Run the application:
 
+Run the Application:
 bash
-```
+Copy code
 python main.py
-```
-
-##📈 Future Enhancements
----
+📈 Future Enhancements
 Add support for cloud-based database storage.
 Implement a live dashboard for attendance tracking.
 Enhance the face recognition accuracy using deep learning models.
-
-
-##🤝 Contributing
----
+🤝 Contributing
 Contributions are welcome! Please follow these steps:
 
 Fork the repository.
 Create a feature branch:
 bash
-```
+Copy code
 git checkout -b feature-name
-```
 Commit changes and open a pull request.
-
-
-
 📞 Contact
 Name: Nitin Ghimire
 Email: my4thusername@gmail.com
-
 
