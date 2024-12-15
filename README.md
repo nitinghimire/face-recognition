@@ -96,9 +96,11 @@ Contributions are welcome! Please follow these steps:
 
 Fork the repository.
 Create a feature branch:
-bash
-Copy code
+
+```bash
 git checkout -b feature-name
+```
+
 Commit changes and open a pull request.
 
 ---
