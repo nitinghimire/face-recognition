@@ -84,14 +84,14 @@ python main.py
 
 ---
 
-**##📈 Future Enhancements**
+## 📈 Future Enhancements
 - Add support for cloud-based database storage.
 - Implement a live dashboard for attendance tracking.
 - Enhance the face recognition accuracy using deep learning models.
 
 ---
 
-**##🤝 Contributing**
+## 🤝 Contributing
 Contributions are welcome! Please follow these steps:
 
 Fork the repository.
@@ -103,7 +103,7 @@ Commit changes and open a pull request.
 
 ---
 
-**##📞 Contact**
+## 📞 Contact
 
 Name: Nitin Ghimire
 Email: my4thusername@gmail.com
